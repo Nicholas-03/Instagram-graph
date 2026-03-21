@@ -2,7 +2,7 @@
   "type": "module",
   "scripts": {
     "start": "node --env-file=.env backend/server.mjs",
-    "browser": "node backend/browser/browserManager.js",
+    "browser": "node --env-file=.env backend/browser/browserService.js",
     "dev": "nodemon --env-file=.env backend/server.mjs"
   },
   "dependencies": {
@@ -12,6 +12,7 @@
     "puppeteer": "^24.40.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.8",
     "nodemon": "^3.1.14",
     "pino-pretty": "^13.1.3"
   }

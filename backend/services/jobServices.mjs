@@ -5,7 +5,8 @@ import { randomUUID } from 'crypto'
 import logger from '../loggers/logger.js'
 
 export async function runJob({ username }) {
-    logger.info(`Job started for username: ${username}`)
+    let jobId = randomUUID()
+    logger.info(`Job started for username: ${username}, id: ${jobId}`)
 
-    return { "id": randomUUID() }
+    return { "id": jobId }
 }
