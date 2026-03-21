@@ -26,5 +26,3 @@ export default async function getMutualFollowers() {
     console.error("request error:", err);
   }
 }
-
-getMutualFollowers()

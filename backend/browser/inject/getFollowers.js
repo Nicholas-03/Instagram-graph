@@ -1,4 +1,4 @@
-const { get } = require("https");
+import { get } from "https";
 
 export default async function getFollowers(page, username, target_user) {
     const followers = await page.evaluate(async (username) => {

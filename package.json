@@ -1,16 +1,18 @@
 {
   "type": "module",
   "scripts": {
-    "start": "node src/api/server.mjs",
-    "browser": "node src/api/browser/browserManager.js",
-    "dev": "nodemon --env-file=.env src/api/server.mjs"
+    "start": "node --env-file=.env backend/server.mjs",
+    "browser": "node backend/browser/browserManager.js",
+    "dev": "nodemon --env-file=.env backend/server.mjs"
   },
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.2.1",
+    "pino": "^10.3.1",
     "puppeteer": "^24.40.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "pino-pretty": "^13.1.3"
   }
 }

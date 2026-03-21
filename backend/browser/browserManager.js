@@ -84,10 +84,6 @@ for (const button of buttons) {
   // await browser.close();
 }
 
-main().catch(err => {
-  console.error("ERRORE:", err);
-});
-
 export async function getBrowserPage() {
   return page
 }
