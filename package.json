@@ -1,0 +1,16 @@
+{
+  "type": "module",
+  "scripts": {
+    "start": "node src/api/server.mjs",
+    "browser": "node src/api/browser/browserManager.js",
+    "dev": "nodemon --env-file=.env src/api/server.mjs"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "puppeteer": "^24.40.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
