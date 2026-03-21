@@ -1,36 +1,28 @@
-window.addEventListener("load", (event) => {
-  console.log("page is fully loaded");
+const ADDRESS = 'http://127.0.0.1:3000'
 
-  getData()
-});
+const input = document.getElementById('jobInput')
+const button = document.getElementById('sendBtn')
 
-async function getData() {
-  const url = "http://127.0.0.1:5000/followers";
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
+async function sendJob(username) {
+	const response = await fetch(`${ADDRESS}/job`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({
+			username: username
+		})
+	});
 
-    const result = await response.json();
-    console.log(result);
-  } catch (error) {
-    console.error(error.message);
-  }
+	if (!response.ok) {
+		throw new Error(`HTTP error: ${response.status}`);
+	}
+
+	const data = await response.json();
+	console.log(data)
+	return data;
 }
 
-async function sendJob() {
-  const url = "http://127.0.0.1:5000/followers"
-
-  try {
-    const response = await fetch(url)
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
-    
-    const result = await response.json();
-    console.log(result);
-  } catch (error) {
-    console.error(error.message);
-  }
-}
+button.addEventListener('click', () => {
+    sendJob(input.value)
+  });

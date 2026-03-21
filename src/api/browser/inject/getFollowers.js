@@ -1,6 +1,6 @@
 const { get } = require("https");
 
-async function getFollowers(page, username, target_user) {
+export default async function getFollowers(page, username, target_user) {
     const followers = await page.evaluate(async (username) => {
         const userQueryRes = await fetch(
             `https://www.instagram.com/web/search/topsearch/?query=${encodeURIComponent(username)}`
@@ -64,5 +64,3 @@ async function getFollowers(page, username, target_user) {
 
     return followers
 }
-
-module.exports = getFollowers
