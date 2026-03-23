@@ -2,7 +2,6 @@
   "type": "module",
   "scripts": {
     "start": "node --env-file=.env backend/server.mjs",
-    "browser": "node --env-file=.env backend/browser/browserService.js",
     "dev": "nodemon --env-file=.env backend/server.mjs"
   },
   "dependencies": {

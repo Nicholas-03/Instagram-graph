@@ -1,5 +1,7 @@
 import puppeteer from "puppeteer";
 import fs from "fs";
+import logger from "../loggers/logger.js";
+import path from "path";
 
 const IG_USERNAME = process.env.IG_USERNAME;
 const IG_PASSWORD = process.env.IG_PASSWORD;
@@ -12,6 +14,7 @@ export async function startBrowser() {
 		headless: false,
 		slowMo: 80,
 		defaultViewport: null,
+		userDataDir: path.resolve('../../data/chrome-profile')
 	});
 
 	page = await browser.newPage();
@@ -21,6 +24,15 @@ export async function startBrowser() {
 		timeout: 60000,
 	});
 
+	if (!await isLoggedIn(page)) {
+		await logInInstagram(page)
+		logger.info('Login made succesfully')
+	}
+
+	return page
+}
+
+async function logInInstagram(page) {
 	const buttons = await page.$$('button');
 
 	for (const button of buttons) {
@@ -65,10 +77,21 @@ export async function startBrowser() {
 	isLogged = true
 }
 
-export function getBrowserPage() {
-	return page
+export async function isLoggedIn(page) {
+  if (page.url().includes('/accounts/login/')) {
+    return false;
+  }
+
+  try {
+    await page.waitForSelector('svg[aria-label="Home"], a[href="/accounts/edit/"]', {
+      timeout: 5000
+    });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
-export function isLoggedIn() {
-	return isLogged
+export function getBrowserPage() {
+	return page
 }
