@@ -19,7 +19,7 @@ export default async function getFollowers(userId) {
 
 		if (!res?.data?.user?.edge_followed_by) {
 			throw new Error(
-				"Risposta followers inattesa: " + JSON.stringify(res).slice(0, 500),
+				`Risposta followers inattesa: ${JSON.stringify(res).slice(0, 500)}`,
 			);
 		}
 

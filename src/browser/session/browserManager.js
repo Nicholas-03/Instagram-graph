@@ -1,5 +1,4 @@
-import fs from "fs";
-import path from "path";
+import path from "node:path";
 import puppeteer from "puppeteer";
 import logger from "../../loggers/logger.js";
 
@@ -7,14 +6,14 @@ const IG_USERNAME = process.env.IG_USERNAME;
 const IG_PASSWORD = process.env.IG_PASSWORD;
 
 let page = null;
-let isLogged = false;
+let _isLogged = false;
 
 export default async function startBrowser() {
 	const browser = await puppeteer.launch({
 		headless: false,
 		slowMo: 80,
 		defaultViewport: null,
-		userDataDir: path.resolve("../../data/chrome-profile"),
+		userDataDir: path.resolve("data/chrome-profile"),
 	});
 
 	page = await browser.newPage();
@@ -78,7 +77,7 @@ async function logInInstagram(page) {
 			.catch(() => null),
 	]);
 
-	isLogged = true;
+	_isLogged = true;
 }
 
 export async function isLoggedIn(page) {
