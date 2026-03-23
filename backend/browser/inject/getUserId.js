@@ -1,9 +1,16 @@
 export default async function getUsernameId(username) {
-    const userQueryRes = await fetch(
+    const res = await fetch(
         `https://www.instagram.com/web/search/topsearch/?query=${encodeURIComponent(username)}`
     );
 
-    const userQueryJson = await userQueryRes.json();
+    const text = await res.text();
+    console.log(text)
+
+    if (!text.trim().startsWith('{')) {
+        throw new Error(`Instagram non ha restituito JSON: ${text}`);
+    }
+
+    const userQueryJson = JSON.parse(text);
 
     const user = userQueryJson.users
         .map(u => u.user)

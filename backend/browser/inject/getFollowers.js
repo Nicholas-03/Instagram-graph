@@ -1,6 +1,4 @@
-import { get } from "https";
-
-export default async function getFollowers(userId, target_user) {
+export default async function getFollowers(userId) {
     let followers = [];
     let after = null;
     let has_next = true;
