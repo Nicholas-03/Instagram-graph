@@ -3,6 +3,7 @@
   "scripts": {
     "start": "node --env-file=.env src/cli/analyze.mjs",
     "dev": "nodemon --env-file=.env --ignore data/ src/cli/analyze.mjs",
+    "graph": "node src/graph/devServer.mjs",
     "fix": "biome check --write ."
   },
   "dependencies": {
