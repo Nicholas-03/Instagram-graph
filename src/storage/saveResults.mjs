@@ -36,3 +36,15 @@ export async function saveFollowings(username, result) {
 
 	return filePath;
 }
+
+export async function saveMutuals(username, result) {
+	const outputDir = path.resolve("data/results");
+	await mkdir(outputDir, { recursive: true });
+
+	const filePath = path.resolve(outputDir, `${username}_mutuals.json`);
+	const json = JSON.stringify(result, null, 2);
+
+	await writeFile(filePath, json, "utf8");
+
+	return filePath;
+}

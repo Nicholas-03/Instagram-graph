@@ -1,4 +1,3 @@
-// src/logger.mjs
 import pino from "pino";
 
 const logger = pino({
