@@ -1,8 +1,8 @@
 {
   "type": "module",
   "scripts": {
-    "start": "node --env-file=.env backend/server.mjs",
-    "dev": "nodemon --env-file=.env backend/server.mjs"
+    "start": "node --env-file=.env src/cli/analyze.mjs",
+    "dev": "nodemon --env-file=.env --ignore data/ src/cli/analyze.mjs"
   },
   "dependencies": {
     "cors": "^2.8.6",
