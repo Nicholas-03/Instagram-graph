@@ -49,6 +49,9 @@ Create a `.env` file:
 
 ```env
 IG_USERNAME=your_instagram_username
+ZYTE_API_KEY=your_zyte_api_key
+ZYTE_PROJECT_ID=your_zyte_project_id
+ZYTE_SPIDER=your_spider_name
 ```
 
 Run the full flow:
@@ -85,6 +88,9 @@ npm run start
 
 # Run analysis in watch mode
 npm run dev
+
+# Run scraper bot on Zyte platform
+npm run zyte:run
 
 # Start graph UI + local image proxy
 npm run graph
