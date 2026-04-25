@@ -1,4 +1,5 @@
 import logger from "../loggers/logger.js";
+import runAnalysis from "../analysis/runAnalysis.mjs";
 
 const SHUB_JOB_DATA = process.env.SHUB_JOB_DATA;
 
@@ -26,20 +27,9 @@ function getProjectIdFromJobKey(jobKey) {
 const jobData = parseJobData(SHUB_JOB_DATA);
 const spiderArgs = jobData.spider_args || {};
 
-const ZYTE_API_KEY =
-	process.env.ZYTE_API_KEY ||
-	process.env.SHUB_APIKEY ||
-	process.env.SCRAPINGHUB_APIKEY ||
-	spiderArgs.zyte_api_key ||
-	spiderArgs.api_key ||
-	jobData.auth;
-const ZYTE_PROJECT_ID =
-	process.env.ZYTE_PROJECT_ID || getProjectIdFromJobKey(process.env.SHUB_JOBKEY);
-const ZYTE_SPIDER =
-	process.env.ZYTE_SPIDER ||
-	spiderArgs.zyte_spider ||
-	spiderArgs.target_spider ||
-	spiderArgs.spider;
+const ZYTE_PROJECT_ID = getProjectIdFromJobKey(process.env.SHUB_JOBKEY);
+const IG_USERNAME =
+	process.env.IG_USERNAME || spiderArgs.ig_username || spiderArgs.username;
 
 function requiredEnv(name, value) {
 	if (!value) {
@@ -48,44 +38,16 @@ function requiredEnv(name, value) {
 }
 
 async function runBot() {
-	requiredEnv(
-		"ZYTE_API_KEY (or SHUB_APIKEY / SCRAPINGHUB_APIKEY / SHUB_JOB_DATA.auth)",
-		ZYTE_API_KEY,
-	);
-	requiredEnv("ZYTE_PROJECT_ID", ZYTE_PROJECT_ID);
-	requiredEnv(
-		"ZYTE_SPIDER (or spider_args.zyte_spider / spider_args.target_spider)",
-		ZYTE_SPIDER,
-	);
-
-	const endpoint = "https://app.zyte.com/api/run.json";
-	const payload = new URLSearchParams({
-		project: ZYTE_PROJECT_ID,
-		spider: ZYTE_SPIDER,
-	});
+	requiredEnv("IG_USERNAME (or spider_args.ig_username / spider_args.username)", IG_USERNAME);
 
 	logger.info(
-		`Scheduling Zyte bot '${ZYTE_SPIDER}' for project '${ZYTE_PROJECT_ID}'`,
+		`Running direct analysis for '${IG_USERNAME}'${
+			ZYTE_PROJECT_ID ? ` in project '${ZYTE_PROJECT_ID}'` : ""
+		}`,
 	);
 
-	const response = await fetch(endpoint, {
-		method: "POST",
-		headers: {
-			Authorization: `Basic ${Buffer.from(`${ZYTE_API_KEY}:`).toString("base64")}`,
-			"Content-Type": "application/x-www-form-urlencoded",
-		},
-		body: payload.toString(),
-	});
-
-	if (!response.ok) {
-		const body = await response.text();
-		throw new Error(
-			`Failed to schedule Zyte bot (${response.status} ${response.statusText}): ${body}`,
-		);
-	}
-
-	const result = await response.json();
-	logger.info({ result }, "Zyte bot scheduled successfully");
+	await runAnalysis(IG_USERNAME);
+	logger.info("Direct analysis completed successfully");
 }
 
 try {

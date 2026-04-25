@@ -49,9 +49,6 @@ Create a `.env` file:
 
 ```env
 IG_USERNAME=your_instagram_username
-ZYTE_API_KEY=your_zyte_api_key
-ZYTE_PROJECT_ID=your_zyte_project_id
-ZYTE_SPIDER=your_spider_name
 ```
 
 Run the full flow:
@@ -194,33 +191,16 @@ run-zyte-bot
 
 ### Zyte runtime error: Missing required environment variable
 
-If logs show missing `ZYTE_API_KEY` or `ZYTE_SPIDER`, set job environment variables in Zyte for spider `run-zyte-bot`.
+In direct-run mode, spider `run-zyte-bot` executes analysis in the same job and does not require `ZYTE_API_KEY`.
 
 Required at runtime:
 
-- `ZYTE_API_KEY` (or `SHUB_APIKEY` / `SCRAPINGHUB_APIKEY` / `SHUB_JOB_DATA.auth`)
-- `ZYTE_SPIDER` (the target spider to schedule)
+- `IG_USERNAME` (or spider args `ig_username` / `username`)
 
-Optional:
-
-- `ZYTE_PROJECT_ID` (if omitted, it is inferred from `SHUB_JOBKEY`)
-
-You can also pass target spider via job arguments:
+If you do not set `IG_USERNAME` as env var, pass it as spider argument:
 
 ```text
-target_spider=your_spider_name
-```
-
-or
-
-```text
-zyte_spider=your_spider_name
-```
-
-You can also pass API key via job args when needed:
-
-```text
-zyte_api_key=your_zyte_api_key
+ig_username=your_instagram_username
 ```
 
 ### Profile images are missing

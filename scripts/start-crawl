@@ -12,7 +12,7 @@ write_fifo() {
   fi
 }
 
-write_fifo "LOG" '{"level":20,"message":"Starting Zyte bot runner"}'
+write_fifo "LOG" '{"level":20,"message":"Starting direct Zyte scraper run"}'
 
 if [ "$SPIDER_NAME" = "run-zyte-bot" ]; then
   node /spider/src/cli/runZyteBot.mjs
