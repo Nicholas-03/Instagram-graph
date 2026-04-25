@@ -192,6 +192,31 @@ After deploy, run spider name:
 run-zyte-bot
 ```
 
+### Zyte runtime error: Missing required environment variable
+
+If logs show missing `ZYTE_API_KEY` or `ZYTE_SPIDER`, set job environment variables in Zyte for spider `run-zyte-bot`.
+
+Required at runtime:
+
+- `ZYTE_API_KEY` (or `SHUB_APIKEY` / `SCRAPINGHUB_APIKEY`)
+- `ZYTE_SPIDER` (the target spider to schedule)
+
+Optional:
+
+- `ZYTE_PROJECT_ID` (if omitted, it is inferred from `SHUB_JOBKEY`)
+
+You can also pass target spider via job arguments:
+
+```text
+target_spider=your_spider_name
+```
+
+or
+
+```text
+zyte_spider=your_spider_name
+```
+
 ### Profile images are missing
 
 - Start the UI with `npm run graph`.

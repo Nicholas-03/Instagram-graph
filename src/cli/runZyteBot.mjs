@@ -1,8 +1,39 @@
 import logger from "../loggers/logger.js";
 
-const ZYTE_API_KEY = process.env.ZYTE_API_KEY;
-const ZYTE_PROJECT_ID = process.env.ZYTE_PROJECT_ID;
-const ZYTE_SPIDER = process.env.ZYTE_SPIDER;
+const SHUB_JOB_DATA = process.env.SHUB_JOB_DATA;
+
+function parseJobData(raw) {
+	if (!raw) {
+		return {};
+	}
+
+	try {
+		return JSON.parse(raw);
+	} catch {
+		logger.warn("Unable to parse SHUB_JOB_DATA as JSON");
+		return {};
+	}
+}
+
+function getProjectIdFromJobKey(jobKey) {
+	if (!jobKey) {
+		return undefined;
+	}
+
+	return jobKey.split("/")[0];
+}
+
+const jobData = parseJobData(SHUB_JOB_DATA);
+const spiderArgs = jobData.spider_args || {};
+
+const ZYTE_API_KEY =
+	process.env.ZYTE_API_KEY ||
+	process.env.SHUB_APIKEY ||
+	process.env.SCRAPINGHUB_APIKEY;
+const ZYTE_PROJECT_ID =
+	process.env.ZYTE_PROJECT_ID || getProjectIdFromJobKey(process.env.SHUB_JOBKEY);
+const ZYTE_SPIDER =
+	process.env.ZYTE_SPIDER || spiderArgs.zyte_spider || spiderArgs.target_spider;
 
 function requiredEnv(name, value) {
 	if (!value) {
@@ -11,9 +42,15 @@ function requiredEnv(name, value) {
 }
 
 async function runBot() {
-	requiredEnv("ZYTE_API_KEY", ZYTE_API_KEY);
+	requiredEnv(
+		"ZYTE_API_KEY (or SHUB_APIKEY / SCRAPINGHUB_APIKEY)",
+		ZYTE_API_KEY,
+	);
 	requiredEnv("ZYTE_PROJECT_ID", ZYTE_PROJECT_ID);
-	requiredEnv("ZYTE_SPIDER", ZYTE_SPIDER);
+	requiredEnv(
+		"ZYTE_SPIDER (or spider_args.zyte_spider / spider_args.target_spider)",
+		ZYTE_SPIDER,
+	);
 
 	const endpoint = "https://app.zyte.com/api/run.json";
 	const payload = new URLSearchParams({
