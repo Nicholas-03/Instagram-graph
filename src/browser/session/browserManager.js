@@ -5,6 +5,13 @@ import logger from "../../loggers/logger.js";
 const IG_USERNAME = process.env.IG_USERNAME;
 const IG_PASSWORD = process.env.IG_PASSWORD;
 
+// Validate credentials are available
+if (!IG_USERNAME || !IG_PASSWORD) {
+	throw new Error(
+		`Missing Instagram credentials. IG_USERNAME: ${IG_USERNAME ? "set" : "missing"}, IG_PASSWORD: ${IG_PASSWORD ? "set" : "missing"}`,
+	);
+}
+
 let page = null;
 let _isLogged = false;
 

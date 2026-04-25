@@ -41,6 +41,9 @@ const ZYTE_PROJECT_ID = getProjectIdFromJobKey(process.env.SHUB_JOBKEY);
 const IG_USERNAME =
 	process.env.IG_USERNAME ||
 	getSpiderArg("IG_USERNAME", "ig_username", "username", "USER");
+const IG_PASSWORD =
+	process.env.IG_PASSWORD ||
+	getSpiderArg("IG_PASSWORD", "ig_password", "password", "PASS");
 
 function requiredEnv(name, value) {
 	if (!value) {
@@ -53,6 +56,14 @@ async function runBot() {
 		"IG_USERNAME (or spider_args.IG_USERNAME / spider_args.ig_username / spider_args.username)",
 		IG_USERNAME,
 	);
+	requiredEnv(
+		"IG_PASSWORD (or spider_args.IG_PASSWORD / spider_args.ig_password / spider_args.password)",
+		IG_PASSWORD,
+	);
+
+	// Set environment variables for browserManager
+	process.env.IG_USERNAME = IG_USERNAME;
+	process.env.IG_PASSWORD = IG_PASSWORD;
 
 	logger.info(
 		`Running direct analysis for '${IG_USERNAME}'${
