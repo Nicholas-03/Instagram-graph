@@ -1,4 +1,3 @@
 projects:
-  default:
-    id: 000000
-    image: true
+  default: 000000
+image: true
