@@ -2,22 +2,21 @@ import path from "node:path";
 import puppeteer from "puppeteer";
 import logger from "../../loggers/logger.js";
 
-const IG_USERNAME = process.env.IG_USERNAME;
-const IG_PASSWORD = process.env.IG_PASSWORD;
-
-// Validate credentials are available
-if (!IG_USERNAME || !IG_PASSWORD) {
-	throw new Error(
-		`Missing Instagram credentials. IG_USERNAME: ${IG_USERNAME ? "set" : "missing"}, IG_PASSWORD: ${IG_PASSWORD ? "set" : "missing"}`,
-	);
-}
+const isCloudRuntime = Boolean(process.env.SHUB_JOBKEY);
 
 let page = null;
 let _isLogged = false;
 
-const isCloudRuntime = Boolean(process.env.SHUB_JOBKEY);
-
 export default async function startBrowser() {
+	const IG_USERNAME = process.env.IG_USERNAME;
+	const IG_PASSWORD = process.env.IG_PASSWORD;
+
+	// Validate credentials are available
+	if (!IG_USERNAME || !IG_PASSWORD) {
+		throw new Error(
+			`Missing Instagram credentials. IG_USERNAME: ${IG_USERNAME ? "set" : "missing"}, IG_PASSWORD: ${IG_PASSWORD ? "set" : "missing"}`,
+		);
+	}
 	const browser = await puppeteer.launch({
 		headless: isCloudRuntime ? "new" : false,
 		slowMo: isCloudRuntime ? 0 : 80,
@@ -36,14 +35,14 @@ export default async function startBrowser() {
 	});
 
 	if (!(await isLoggedIn(page))) {
-		await logInInstagram(page);
+		await logInInstagram(page, IG_USERNAME, IG_PASSWORD);
 		logger.info("Login made succesfully");
 	}
 
 	return { browser, page };
 }
 
-async function logInInstagram(page) {
+async function logInInstagram(page, username, password) {
 	const buttons = await page.$$("button");
 
 	for (const button of buttons) {
@@ -69,10 +68,10 @@ async function logInInstagram(page) {
 	});
 
 	await page.click('input[name="email"]', { clickCount: 3 });
-	await page.type('input[name="email"]', IG_USERNAME, { delay: 80 });
+	await page.type('input[name="email"]', username, { delay: 80 });
 
 	await page.click('input[type="password"]', { clickCount: 3 });
-	await page.type('input[type="password"]', IG_PASSWORD, { delay: 80 });
+	await page.type('input[type="password"]', password, { delay: 80 });
 
 	await page.waitForSelector('div[aria-label="Log in"][role="button"]', {
 		visible: true,
