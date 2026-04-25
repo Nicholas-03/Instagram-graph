@@ -27,9 +27,20 @@ function getProjectIdFromJobKey(jobKey) {
 const jobData = parseJobData(SHUB_JOB_DATA);
 const spiderArgs = jobData.spider_args || {};
 
+function getSpiderArg(...keys) {
+	for (const key of keys) {
+		if (spiderArgs[key]) {
+			return spiderArgs[key];
+		}
+	}
+
+	return undefined;
+}
+
 const ZYTE_PROJECT_ID = getProjectIdFromJobKey(process.env.SHUB_JOBKEY);
 const IG_USERNAME =
-	process.env.IG_USERNAME || spiderArgs.ig_username || spiderArgs.username;
+	process.env.IG_USERNAME ||
+	getSpiderArg("IG_USERNAME", "ig_username", "username", "USER");
 
 function requiredEnv(name, value) {
 	if (!value) {
@@ -38,7 +49,10 @@ function requiredEnv(name, value) {
 }
 
 async function runBot() {
-	requiredEnv("IG_USERNAME (or spider_args.ig_username / spider_args.username)", IG_USERNAME);
+	requiredEnv(
+		"IG_USERNAME (or spider_args.IG_USERNAME / spider_args.ig_username / spider_args.username)",
+		IG_USERNAME,
+	);
 
 	logger.info(
 		`Running direct analysis for '${IG_USERNAME}'${
