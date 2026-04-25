@@ -8,12 +8,17 @@ const IG_PASSWORD = process.env.IG_PASSWORD;
 let page = null;
 let _isLogged = false;
 
+const isCloudRuntime = Boolean(process.env.SHUB_JOBKEY);
+
 export default async function startBrowser() {
 	const browser = await puppeteer.launch({
-		headless: false,
-		slowMo: 80,
+		headless: isCloudRuntime ? "new" : false,
+		slowMo: isCloudRuntime ? 0 : 80,
 		defaultViewport: null,
 		userDataDir: path.resolve("data/chrome-profile"),
+		args: isCloudRuntime
+			? ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"]
+			: [],
 	});
 
 	page = await browser.newPage();
