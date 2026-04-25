@@ -161,6 +161,37 @@ Main outputs are generated in `data/results`:
 
 ## Troubleshooting
 
+### Zyte deploy error: scrapy.cfg is not found
+
+This repository is a Node.js project, not a Scrapy project. Zyte must deploy it as a custom image.
+
+This repo now includes:
+
+- `scrapinghub.yml` with image deploy enabled (`image: true`)
+- `Dockerfile` for image build
+- `scripts/start-crawl` and `scripts/shub-image-info` required by Zyte custom image contract
+
+Before deploy, set your Zyte project ID in `scrapinghub.yml`:
+
+```yaml
+projects:
+	default:
+		id: 123456
+		image: true
+```
+
+Then deploy with custom image flow:
+
+```bash
+shub image upload
+```
+
+After deploy, run spider name:
+
+```text
+run-zyte-bot
+```
+
 ### Profile images are missing
 
 - Start the UI with `npm run graph`.

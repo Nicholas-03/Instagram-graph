@@ -1,0 +1,4 @@
+projects:
+  default:
+    id: 000000
+    image: true

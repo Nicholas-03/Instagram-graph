@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SPIDER_NAME="${SHUB_SPIDER:-run-zyte-bot}"
+FIFO_PATH="${SHUB_FIFO_PATH:-}"
+
+write_fifo() {
+  local prefix="$1"
+  local payload="$2"
+  if [ -n "$FIFO_PATH" ]; then
+    printf '%s %s\n' "$prefix" "$payload" >> "$FIFO_PATH"
+  fi
+}
+
+write_fifo "LOG" '{"level":20,"message":"Starting Zyte bot runner"}'
+
+if [ "$SPIDER_NAME" = "run-zyte-bot" ]; then
+  node /spider/src/cli/runZyteBot.mjs
+  write_fifo "FIN" '{"outcome":"finished"}'
+else
+  write_fifo "LOG" '{"level":40,"message":"Unknown spider name"}'
+  write_fifo "FIN" '{"outcome":"failed"}'
+  echo "Unknown spider: $SPIDER_NAME" >&2
+  exit 2
+fi
