@@ -198,7 +198,7 @@ If logs show missing `ZYTE_API_KEY` or `ZYTE_SPIDER`, set job environment variab
 
 Required at runtime:
 
-- `ZYTE_API_KEY` (or `SHUB_APIKEY` / `SCRAPINGHUB_APIKEY`)
+- `ZYTE_API_KEY` (or `SHUB_APIKEY` / `SCRAPINGHUB_APIKEY` / `SHUB_JOB_DATA.auth`)
 - `ZYTE_SPIDER` (the target spider to schedule)
 
 Optional:
@@ -215,6 +215,12 @@ or
 
 ```text
 zyte_spider=your_spider_name
+```
+
+You can also pass API key via job args when needed:
+
+```text
+zyte_api_key=your_zyte_api_key
 ```
 
 ### Profile images are missing

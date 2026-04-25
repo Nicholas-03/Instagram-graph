@@ -29,11 +29,17 @@ const spiderArgs = jobData.spider_args || {};
 const ZYTE_API_KEY =
 	process.env.ZYTE_API_KEY ||
 	process.env.SHUB_APIKEY ||
-	process.env.SCRAPINGHUB_APIKEY;
+	process.env.SCRAPINGHUB_APIKEY ||
+	spiderArgs.zyte_api_key ||
+	spiderArgs.api_key ||
+	jobData.auth;
 const ZYTE_PROJECT_ID =
 	process.env.ZYTE_PROJECT_ID || getProjectIdFromJobKey(process.env.SHUB_JOBKEY);
 const ZYTE_SPIDER =
-	process.env.ZYTE_SPIDER || spiderArgs.zyte_spider || spiderArgs.target_spider;
+	process.env.ZYTE_SPIDER ||
+	spiderArgs.zyte_spider ||
+	spiderArgs.target_spider ||
+	spiderArgs.spider;
 
 function requiredEnv(name, value) {
 	if (!value) {
@@ -43,7 +49,7 @@ function requiredEnv(name, value) {
 
 async function runBot() {
 	requiredEnv(
-		"ZYTE_API_KEY (or SHUB_APIKEY / SCRAPINGHUB_APIKEY)",
+		"ZYTE_API_KEY (or SHUB_APIKEY / SCRAPINGHUB_APIKEY / SHUB_JOB_DATA.auth)",
 		ZYTE_API_KEY,
 	);
 	requiredEnv("ZYTE_PROJECT_ID", ZYTE_PROJECT_ID);
