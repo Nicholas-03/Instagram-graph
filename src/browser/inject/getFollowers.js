@@ -28,8 +28,12 @@ export default async function getFollowers(userId) {
 
 		followers = followers.concat(
 			res.data.user.edge_followed_by.edges.map(({ node }) => ({
-				username: node.username,
-				full_name: node.full_name,
+				userId: node.id != null ? String(node.id) : null,
+				nickname: node.username,
+				name: node.full_name,
+				profilePic: node.profile_pic_url,
+				isPrivate: node.is_private,
+				followedByViewer: node.followed_by_viewer,
 			})),
 		);
 	}

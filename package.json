@@ -3,9 +3,11 @@
   "scripts": {
     "start": "node --env-file=.env src/cli/analyze.mjs",
     "dev": "nodemon --env-file=.env --ignore data/ src/cli/analyze.mjs",
+    "browsers:install": "puppeteer browsers install chrome",
     "zyte:run": "node --env-file=.env src/cli/runZyteBot.mjs",
     "graph": "node src/graph/devServer.mjs",
-    "fix": "biome check --write ."
+    "fix": "biome check --write .",
+    "test": "node --test"
   },
   "dependencies": {
     "cors": "^2.8.6",

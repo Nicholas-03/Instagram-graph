@@ -32,22 +32,22 @@ export default async function startBrowser() {
 }
 
 async function logInInstagram(page) {
-	const buttons = await page.$$("button");
-
-	for (const button of buttons) {
-		const text = await button.evaluate((el) =>
-			el.textContent?.trim().toLowerCase(),
+	if (!IG_USERNAME || !IG_PASSWORD) {
+		throw new Error(
+			"Instagram login requires IG_USERNAME and IG_PASSWORD when the saved browser profile is not authenticated",
 		);
-		if (text === "allow all cookies") {
-			await button.click();
-			break;
-		}
 	}
+
+	await clickVisibleControlByText(page, "allow all cookies", 5000).catch(
+		() => null,
+	);
 
 	await new Promise((resolve) => setTimeout(resolve, 2000));
 
 	// Login
-	await page.waitForSelector('input[name="email"]', {
+	const usernameSelector = 'input[name="username"], input[name="email"]';
+
+	await page.waitForSelector(usernameSelector, {
 		visible: true,
 		timeout: 30000,
 	});
@@ -56,19 +56,16 @@ async function logInInstagram(page) {
 		timeout: 30000,
 	});
 
-	await page.click('input[name="email"]', { clickCount: 3 });
-	await page.type('input[name="email"]', IG_USERNAME, { delay: 80 });
+	await page.click(usernameSelector, { clickCount: 3 });
+	await page.type(usernameSelector, IG_USERNAME, { delay: 80 });
 
 	await page.click('input[type="password"]', { clickCount: 3 });
 	await page.type('input[type="password"]', IG_PASSWORD, { delay: 80 });
 
-	await page.waitForSelector('div[aria-label="Log in"][role="button"]', {
-		visible: true,
-		timeout: 30000,
-	});
+	await waitForVisibleControlByText(page, "log in", 30000);
 
 	await Promise.all([
-		page.click('div[aria-label="Log in"][role="button"]'),
+		clickVisibleControlByText(page, "log in", 30000),
 		page
 			.waitForNavigation({
 				waitUntil: "domcontentloaded",
@@ -78,6 +75,70 @@ async function logInInstagram(page) {
 	]);
 
 	_isLogged = true;
+}
+
+async function waitForVisibleControlByText(page, text, timeout) {
+	await page.waitForFunction(
+		(expectedText) => {
+			const normalizedExpectedText = expectedText.trim().toLowerCase();
+			const controls = document.querySelectorAll(
+				'button, div[role="button"], a[role="button"], input[type="submit"]',
+			);
+
+			return Array.from(controls).some((control) => {
+				const text = (
+					control.getAttribute("aria-label") ||
+					control.value ||
+					control.textContent ||
+					""
+				)
+					.trim()
+					.toLowerCase();
+				const isVisible = Boolean(
+					control.offsetWidth ||
+						control.offsetHeight ||
+						control.getClientRects().length,
+				);
+
+				return isVisible && text === normalizedExpectedText;
+			});
+		},
+		{ timeout },
+		text,
+	);
+}
+
+async function clickVisibleControlByText(page, text, timeout) {
+	await waitForVisibleControlByText(page, text, timeout);
+	await page.evaluate((expectedText) => {
+		const normalizedExpectedText = expectedText.trim().toLowerCase();
+		const controls = document.querySelectorAll(
+			'button, div[role="button"], a[role="button"], input[type="submit"]',
+		);
+		const control = Array.from(controls).find((control) => {
+			const text = (
+				control.getAttribute("aria-label") ||
+				control.value ||
+				control.textContent ||
+				""
+			)
+				.trim()
+				.toLowerCase();
+			const isVisible = Boolean(
+				control.offsetWidth ||
+					control.offsetHeight ||
+					control.getClientRects().length,
+			);
+
+			return isVisible && text === normalizedExpectedText;
+		});
+
+		if (!control) {
+			throw new Error(`Unable to find visible control: ${expectedText}`);
+		}
+
+		control.click();
+	}, text);
 }
 
 export async function isLoggedIn(page) {

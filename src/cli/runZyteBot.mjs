@@ -1,5 +1,5 @@
-import logger from "../loggers/logger.js";
 import runAnalysis from "../analysis/runAnalysis.mjs";
+import logger from "../loggers/logger.js";
 
 const SHUB_JOB_DATA = process.env.SHUB_JOB_DATA;
 

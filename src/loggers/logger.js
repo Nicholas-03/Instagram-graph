@@ -1,5 +1,5 @@
-import pino from "pino";
 import { createRequire } from "node:module";
+import pino from "pino";
 
 const require = createRequire(import.meta.url);
 
