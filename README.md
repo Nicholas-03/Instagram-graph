@@ -2,6 +2,8 @@
 
 Analyze an Instagram account's followers/followings and visualize the network as an interactive Cytoscape graph.
 
+![Instagram Graph visualization](docs/graph-screenshot.jpg)
+
 ## Requirements
 
 - Node.js 20+
